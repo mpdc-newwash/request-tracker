@@ -29,22 +29,23 @@
 
     <div class="table-responsive">
       <table class="table table-bordered table-hover align-middle">
-       <thead class="table-dark">
-	  <tr>
-	    <th>Date Submitted</th>
-	    <th>Program Title</th>
-	    <th>Description</th>
-	    <th>Budget Source</th>
-	    <th>Requesting Office</th>
-	    <th>Submitted By</th>
-	    <th>Status</th>
-	  </tr>
+        <thead class="table-dark">
+          <tr>
+            <th>Date Submitted</th>
+            <th>Program Title</th>
+            <th>Description</th>
+            <th>Date of Event</th> <!-- ✅ Added this column -->
+            <th>Budget Source</th>
+            <th>Requesting Office</th>
+            <th>Submitted By</th>
+            <th>Status</th>
+          </tr>
         </thead>
 
         <tbody id="data-table">
           <!-- Data from Google Sheet will load here -->
           <tr id="no-results" style="display: none;">
-            <td colspan="7" class="text-center text-muted">No matching results found.</td>
+            <td colspan="8" class="text-center text-muted">No matching results found.</td>
           </tr>
         </tbody>
       </table>

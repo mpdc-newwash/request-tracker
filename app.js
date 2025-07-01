@@ -15,6 +15,7 @@ fetch(sheetURL)
       const fundSource = row.c[4]?.v || '';
       const office = row.c[5]?.v || '';
       const submittedBy = row.c[6]?.v || '';
+      const eventDate = row.c[8]?.f || row.c[8]?.v || ''; // 🆕 Date of Event
       const status = row.c[9]?.v || '';
 
       const tr = document.createElement("tr");
@@ -22,6 +23,7 @@ fetch(sheetURL)
         <td>${timestamp}</td>
         <td>${title}</td>
         <td>${description}</td>
+        <td>${eventDate}</td>
         <td>${fundSource}</td>
         <td>${office}</td>
         <td>${submittedBy}</td>
