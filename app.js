@@ -12,10 +12,13 @@ fetch(sheetURL)
       const timestamp = row.c[0]?.f || '';
       const title = row.c[1]?.v || '';
       const description = row.c[2]?.v || '';
-      const dateOfEvent = row.c[9]?.f || row.c[9]?.v || '';
+      const financials = row.c[3]?.v || '';
       const fundSource = row.c[4]?.v || '';
       const office = row.c[5]?.v || '';
       const submittedBy = row.c[6]?.v || '';
+      const email = row.c[7]?.v || '';
+      const totalBudget = row.c[8]?.v || '';
+      const dateOfEvent = row.c[9]?.f || row.c[9]?.v || '';
       const participants = row.c[10]?.v || '';
       const speaker = row.c[11]?.v || '';
       const status = row.c[12]?.v || '';
