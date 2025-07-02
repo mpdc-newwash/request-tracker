@@ -12,21 +12,25 @@ fetch(sheetURL)
       const timestamp = row.c[0]?.f || '';
       const title = row.c[1]?.v || '';
       const description = row.c[2]?.v || '';
+      const dateOfEvent = row.c[9]?.f || row.c[9]?.v || '';
       const fundSource = row.c[4]?.v || '';
       const office = row.c[5]?.v || '';
       const submittedBy = row.c[6]?.v || '';
-      const eventDate = row.c[8]?.f || row.c[8]?.v || ''; // 🆕 Date of Event
-      const status = row.c[9]?.v || '';
+      const participants = row.c[10]?.v || '';
+      const speaker = row.c[11]?.v || '';
+      const status = row.c[12]?.v || '';
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${timestamp}</td>
         <td>${title}</td>
         <td>${description}</td>
-        <td>${eventDate}</td>
+        <td>${dateOfEvent}</td>
         <td>${fundSource}</td>
         <td>${office}</td>
         <td>${submittedBy}</td>
+        <td>${participants}</td>
+        <td>${speaker}</td>
         <td><span class="badge ${getStatusClass(status)}">${status}</span></td>
       `;
       table.appendChild(tr);
