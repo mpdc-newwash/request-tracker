@@ -17,18 +17,19 @@
 
   <div class="container mt-3">
 
-    <!-- Google Form Link -->
-    <a href="https://forms.gle/2V8BecPXmD57bSWFA" target="_blank" class="btn btn-primary mb-3">
+    <!-- ✅ Google Form Link (updated) -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeVvOE-zYruACOKiRKzmjjOQSEU9fCt9tXlMWBkzunT7kL7cA/viewform?usp=header"
+       target="_blank" class="btn btn-primary mb-3">
       ➕ Submit a New Program Design Request
     </a>
 
-    <!-- Controls -->
+    <!-- ✅ Controls -->
     <div class="d-flex justify-content-between mb-3 gap-2">
       <button onclick="location.reload()" class="btn btn-outline-secondary">🔄 Refresh Table</button>
       <input type="text" id="search" class="form-control" placeholder="Search by any field...">
     </div>
 
-    <!-- Status Legend -->
+    <!-- ✅ Status Legend -->
     <div class="mb-3">
       <strong>Status Legend:</strong>
       <span class="badge bg-warning text-dark">Pending</span>
@@ -37,7 +38,7 @@
       <span class="badge bg-secondary">Other</span>
     </div>
 
-    <!-- Table -->
+    <!-- ✅ Data Table -->
     <div class="table-responsive">
       <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
@@ -52,7 +53,7 @@
           </tr>
         </thead>
         <tbody id="data-table">
-          <!-- Data from Google Sheet will load here -->
+          <!-- Populated dynamically via app.js -->
           <tr id="no-results" style="display: none;">
             <td colspan="7" class="text-center text-muted">No matching results found.</td>
           </tr>

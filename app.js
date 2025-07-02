@@ -1,4 +1,4 @@
-const sheetID = '12Yj3MzATz6ciVN0ebXH0Uu7RD4SfUFZ4GRmZk3cGzG8';
+const sheetID = '1ckq0Tqba3_7ZZf3DjqlYLH7WWikDrFM0KNw0gZ-n-FU';
 const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
 
 fetch(sheetURL)
@@ -9,13 +9,13 @@ fetch(sheetURL)
     const table = document.getElementById("data-table");
 
     rows.forEach(row => {
-      const timestamp = row.c[0]?.f || '';
-      const title = row.c[1]?.v || '';
-      const description = row.c[2]?.v || '';
-      const fundSource = row.c[4]?.v || '';
-      const office = row.c[5]?.v || '';
-      const submittedBy = row.c[6]?.v || '';
-      const status = row.c[12]?.v || '';
+      const timestamp = row.c[0]?.f || '';         // Timestamp
+      const title = row.c[2]?.v || '';             // Program Title
+      const description = row.c[3]?.v || '';       // Program Description
+      const fundSource = row.c[6]?.v || '';        // Budget Source
+      const office = row.c[10]?.v || '';           // Requesting Office
+      const submittedBy = row.c[11]?.v || '';      // Submitted By
+      const status = row.c[12]?.v || '';           // Status
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -30,6 +30,7 @@ fetch(sheetURL)
       table.appendChild(tr);
     });
 
+    // Search filter
     document.getElementById('search').addEventListener('input', function () {
       const keyword = this.value.toLowerCase();
       const rows = table.getElementsByTagName('tr');
