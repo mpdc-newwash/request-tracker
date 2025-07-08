@@ -15,7 +15,7 @@ fetch(sheetURL)
       const fundSource = row.c[6]?.v || '';        // Budget Source
       const office = row.c[10]?.v || '';           // Requesting Office
       const submittedBy = row.c[11]?.v || '';      // Submitted By
-      const status = row.c[13]?.v || '';           // Status
+      const status = row.c[14]?.v || '';           // Status
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
