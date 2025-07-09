@@ -9,11 +9,11 @@ fetch(sheetURL)
     const table = document.querySelector("#budgetTable tbody");
 
     rows.forEach((row, i) => {
-      if (!row.c[2]) return; // skip empty rows
+      if (!row.c[2]) return; // Skip empty rows
 
       const title = row.c[2]?.v || "";
       const fund = row.c[6]?.v || "";
-      const status = row.c[18]?.v || ""; // Adjust if you added columns after col 12
+      const status = row.c[18]?.v || "";
       const remarks = row.c[19]?.v || "";
 
       const tr = document.createElement("tr");
@@ -22,13 +22,13 @@ fetch(sheetURL)
         <td>${fund}</td>
         <td>
           <select id="status-${i}" class="form-select">
-            <option value="Pending">Pending</option>
+            <option value="Pending" ${status === "Pending" ? "selected" : ""}>Pending</option>
             <option value="Approved" ${status === "Approved" ? "selected" : ""}>Approved</option>
             <option value="Not Approved" ${status === "Not Approved" ? "selected" : ""}>Not Approved</option>
           </select>
         </td>
         <td><input type="text" class="form-control" id="remarks-${i}" value="${remarks}"></td>
-        <td><button class="btn btn-primary" onclick="submitUpdate(${i})">Submit</button></td>
+        <td><button class="btn btn-primary" id="submit-btn-${i}" onclick="submitUpdate(${i})">Submit</button></td>
       `;
       table.appendChild(tr);
     });
@@ -47,7 +47,7 @@ function submitUpdate(rowIndex) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "updateBudgetStatus",
-      row: rowIndex + 2, // +2 to match sheet row
+      row: rowIndex + 2,
       status,
       remarks
     })
@@ -78,4 +78,3 @@ function submitUpdate(rowIndex) {
       }, 2000);
     });
 }
-
