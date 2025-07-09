@@ -13,8 +13,8 @@ fetch(sheetURL)
 
       const title = row.c[2]?.v || "";
       const fund = row.c[6]?.v || "";
-      const status = row.c[13]?.v || ""; // Adjust if you added columns after col 12
-      const remarks = row.c[14]?.v || "";
+      const status = row.c[18]?.v || ""; // Adjust if you added columns after col 12
+      const remarks = row.c[19]?.v || "";
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
