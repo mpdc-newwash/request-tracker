@@ -3,9 +3,21 @@
 <head>
   <title>Budget Office Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1050;
+    }
+  </style>
 </head>
 <body class="p-4">
   <h2>Budget Office Dashboard</h2>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="alert d-none" role="alert"></div>
+
   <table class="table table-bordered" id="budgetTable">
     <thead>
       <tr>
@@ -18,6 +30,98 @@
     </thead>
     <tbody></tbody>
   </table>
-  <script src="budget.js"></script>
+
+  <script>
+    const sheetURL = 'https://docs.google.com/spreadsheets/d/1ckq0Tqba3_7ZZf3DjqlYLH7WWikDrFM0KNw0gZ-n-FU/gviz/tq?tqx=out:json';
+    const endpointURL = 'https://script.google.com/macros/s/AKfycbwhlf_hdwcarqnHy4PxqcQ3SCO1j56mObyMJ_WzETZNlBrKr81_hk7au8WE0u6uY8W5qA/exec';
+
+    fetch(sheetURL)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        const table = document.querySelector("#budgetTable tbody");
+
+        rows.forEach((row, i) => {
+          if (!row.c[2]) return;
+
+          const title = row.c[2]?.v || "";
+          const fund = row.c[6]?.v || "";
+          const status = row.c[18]?.v || "";
+          const remarks = row.c[19]?.v || "";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${title}</td>
+            <td>${fund}</td>
+            <td>
+              <select id="status-${i}" class="form-select">
+                <option value="Pending" ${status === "Pending" ? "selected" : ""}>Pending</option>
+                <option value="Approved" ${status === "Approved" ? "selected" : ""}>Approved</option>
+                <option value="Not Approved" ${status === "Not Approved" ? "selected" : ""}>Not Approved</option>
+              </select>
+            </td>
+            <td><input type="text" class="form-control" id="remarks-${i}" value="${remarks}"></td>
+            <td><button class="btn btn-primary" id="submit-btn-${i}" onclick="submitUpdate(${i})">Submit</button></td>
+          `;
+          table.appendChild(tr);
+        });
+      });
+
+    function showToast(message, type = "success") {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.className = `alert alert-${type}`;
+      toast.classList.remove("d-none");
+      setTimeout(() => {
+        toast.classList.add("d-none");
+      }, 3000);
+    }
+
+    function submitUpdate(rowIndex) {
+      const status = document.querySelector(`#status-${rowIndex}`).value;
+      const remarks = document.querySelector(`#remarks-${rowIndex}`).value;
+      const button = document.querySelector(`#submit-btn-${rowIndex}`);
+
+      button.disabled = true;
+      button.innerText = "Saving...";
+
+      fetch(endpointURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "updateBudgetStatus",
+          row: rowIndex + 2,
+          status,
+          remarks
+        })
+      })
+        .then(res => res.text())
+        .then(result => {
+          if (result.includes("Success")) {
+            showToast("Budget status saved successfully.");
+            button.classList.remove("btn-primary");
+            button.classList.add("btn-success");
+            button.innerText = "Saved!";
+          } else {
+            throw new Error("Unexpected response: " + result);
+          }
+        })
+        .catch(err => {
+          console.error("Submit error:", err);
+          showToast("Error saving data.", "danger");
+          button.classList.remove("btn-primary");
+          button.classList.add("btn-danger");
+          button.innerText = "Error!";
+        })
+        .finally(() => {
+          setTimeout(() => {
+            button.disabled = false;
+            button.className = "btn btn-primary";
+            button.innerText = "Submit";
+          }, 2000);
+        });
+    }
+  </script>
 </body>
 </html>
