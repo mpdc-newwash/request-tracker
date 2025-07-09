@@ -37,15 +37,45 @@ fetch(sheetURL)
 function submitUpdate(rowIndex) {
   const status = document.querySelector(`#status-${rowIndex}`).value;
   const remarks = document.querySelector(`#remarks-${rowIndex}`).value;
+  const submitBtn = document.querySelector(`#submit-btn-${rowIndex}`);
+
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting...";
 
   fetch(endpointURL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       action: "updateBudgetStatus",
-      row: rowIndex + 2, // +2 because of 0-index and header row
+      row: rowIndex + 2, // +2 to match sheet row
       status,
       remarks
     })
-  }).then(res => alert("Submitted!"));
+  })
+    .then(res => res.text())
+    .then(response => {
+      if (response.includes("Success")) {
+        submitBtn.classList.remove("btn-primary");
+        submitBtn.classList.add("btn-success");
+        submitBtn.innerText = "Saved!";
+      } else {
+        throw new Error("Unexpected response: " + response);
+      }
+    })
+    .catch(err => {
+      submitBtn.classList.remove("btn-primary");
+      submitBtn.classList.add("btn-danger");
+      submitBtn.innerText = "Error!";
+      console.error("Submission failed:", err);
+      alert("Failed to save. Please try again or contact MPDC.");
+    })
+    .finally(() => {
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("btn-success", "btn-danger");
+        submitBtn.classList.add("btn-primary");
+        submitBtn.innerText = "Submit";
+      }, 2000);
+    });
 }
+
