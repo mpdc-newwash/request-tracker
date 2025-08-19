@@ -11,18 +11,18 @@ fetch(sheetURL)
     rows.forEach(row => {
       const timestamp = row.c[0]?.f || '';         // Timestamp
       const title = row.c[2]?.v || '';             // Program Title
-     // const description = row.c[3]?.v || '';       // Program Description
+      const description = row.c[3]?.v || '';       // Program Description
       const fundSource = row.c[6]?.v || '';        // Budget Source
       const office = row.c[10]?.v || '';           // Requesting Office
       const submittedBy = row.c[11]?.v || '';      // Submitted By
       const status = row.c[13]?.v || '';           // Status
-//       <td>${description}</td>
  
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${timestamp}</td>
         <td>${title}</td>
+         <td>${description}</td>
         <td>${fundSource}</td>
         <td>${office}</td>
         <td>${submittedBy}</td>
