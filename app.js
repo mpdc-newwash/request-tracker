@@ -16,12 +16,13 @@ fetch(sheetURL)
       const office = row.c[10]?.v || '';           // Requesting Office
       const submittedBy = row.c[11]?.v || '';      // Submitted By
       const status = row.c[13]?.v || '';           // Status
+//       <td>${description}</td>
+ 
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${timestamp}</td>
         <td>${title}</td>
-        <td>${description}</td>
         <td>${fundSource}</td>
         <td>${office}</td>
         <td>${submittedBy}</td>
