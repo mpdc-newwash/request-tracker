@@ -26,7 +26,7 @@ fetch(sheetURL)
     // --- Sort by timestamp (latest first) ---
     tableData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-    // Set filteredData initially to full dataset
+    // Initial filter = all data
     filteredData = [...tableData];
 
     renderTable();
@@ -45,7 +45,7 @@ fetch(sheetURL)
     });
   });
 
-// --- Render Table Function ---
+// --- Render Table ---
 function renderTable() {
   const table = document.getElementById("data-table");
   table.innerHTML = '';
@@ -76,7 +76,7 @@ function renderTable() {
   });
 }
 
-// --- Render Pagination Buttons ---
+// --- Render Pagination (with Prev/Next) ---
 function renderPagination() {
   let container = document.getElementById("pagination");
   if (!container) {
@@ -90,7 +90,29 @@ function renderPagination() {
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
   if (totalPages <= 1) return;
 
-  for (let i = 1; i <= totalPages; i++) {
+  // Prev button
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "⟨ Prev";
+  prevBtn.className = "btn btn-sm btn-outline-secondary";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderTable();
+      renderPagination();
+    }
+  });
+  container.appendChild(prevBtn);
+
+  // Page numbers (max 5 visible at once for cleaner UI)
+  const maxVisible = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  if (endPage - startPage < maxVisible - 1) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
     btn.className = `btn btn-sm ${i === currentPage ? "btn-primary" : "btn-outline-primary"}`;
@@ -101,6 +123,20 @@ function renderPagination() {
     });
     container.appendChild(btn);
   }
+
+  // Next button
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next ⟩";
+  nextBtn.className = "btn btn-sm btn-outline-secondary";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderTable();
+      renderPagination();
+    }
+  });
+  container.appendChild(nextBtn);
 }
 
 // --- Status Badge Helper ---
