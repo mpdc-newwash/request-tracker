@@ -12,11 +12,10 @@ fetch(sheetURL)
     const json = JSON.parse(data.substr(47).slice(0, -2));
     const rows = json.table.rows;
 
-    // --- Map rows to objects ---
+    // --- Map rows to objects (exclude description) ---
     tableData = rows.map(row => ({
       timestamp: row.c[0]?.f || '',
       title: row.c[2]?.v || '',
-      description: row.c[3]?.v || '',
       fundSource: row.c[6]?.v || '',
       office: row.c[10]?.v || '',
       submittedBy: row.c[11]?.v || '',
@@ -56,7 +55,7 @@ function renderTable() {
 
   if (pageData.length === 0) {
     table.innerHTML = `<tr id="no-results">
-      <td colspan="7" class="text-center text-muted">No matching results found.</td>
+      <td colspan="6" class="text-center text-muted">No matching results found.</td>
     </tr>`;
     return;
   }
@@ -66,7 +65,6 @@ function renderTable() {
     tr.innerHTML = `
       <td>${item.timestamp}</td>
       <td>${item.title}</td>
-      <td>${item.description}</td>
       <td>${item.fundSource}</td>
       <td>${item.office}</td>
       <td>${item.submittedBy}</td>
