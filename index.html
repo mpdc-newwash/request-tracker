@@ -4,13 +4,6 @@
   <meta charset="UTF-8">
   <title>MPDC Program Statement Request System</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    /* ✅ Hide the 3rd column (Description) in table head + body */
-    #data-table tr td:nth-child(3),
-    #data-table tr th:nth-child(3) {
-      display: none;
-    }
-  </style>
 </head>
 <body class="bg-light">
 
@@ -52,7 +45,6 @@
           <tr>
             <th>Date Submitted</th>
             <th>Program Title</th>
-            <th>Description</th> <!-- This will be hidden by CSS -->
             <th>Budget Source</th>
             <th>Requesting Office</th>
             <th>Submitted By</th>
@@ -62,7 +54,7 @@
         <tbody id="data-table">
           <!-- Populated dynamically via app.js -->
           <tr id="no-results" style="display: none;">
-            <td colspan="7" class="text-center text-muted">No matching results found.</td>
+            <td colspan="6" class="text-center text-muted">No matching results found.</td>
           </tr>
         </tbody>
       </table>
