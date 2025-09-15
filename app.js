@@ -1,14 +1,19 @@
 const sheetID = '1ckq0Tqba3_7ZZf3DjqlYLH7WWikDrFM0KNw0gZ-n-FU';
 const sheetURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json`;
 
+let tableData = [];
+let filteredData = [];
+const rowsPerPage = 20;
+let currentPage = 1;
+
 fetch(sheetURL)
   .then(res => res.text())
   .then(data => {
     const json = JSON.parse(data.substr(47).slice(0, -2));
-    let rows = json.table.rows;
+    const rows = json.table.rows;
 
-    // --- Map rows to objects for easier handling ---
-    let tableData = rows.map(row => ({
+    // --- Map rows to objects ---
+    tableData = rows.map(row => ({
       timestamp: row.c[0]?.f || '',
       title: row.c[2]?.v || '',
       description: row.c[3]?.v || '',
@@ -18,36 +23,45 @@ fetch(sheetURL)
       status: row.c[13]?.v || ''
     }));
 
-    // --- Sort by timestamp descending (latest first) ---
+    // --- Sort by timestamp (latest first) ---
     tableData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-    // --- Limit to latest 20 entries ---
-    tableData = tableData.slice(0, 20);
+    // Set filteredData initially to full dataset
+    filteredData = [...tableData];
 
-    const table = document.getElementById("data-table");
-    renderTable(tableData, table);
+    renderTable();
+    renderPagination();
 
     // --- Search filter ---
     document.getElementById('search').addEventListener('input', function () {
       const keyword = this.value.toLowerCase();
-      let matchFound = false;
+      filteredData = tableData.filter(item =>
+        Object.values(item).some(val => val.toLowerCase().includes(keyword))
+      );
 
-      Array.from(table.getElementsByTagName('tr')).forEach(row => {
-        const text = row.innerText.toLowerCase();
-        const isMatch = text.includes(keyword);
-        row.style.display = isMatch ? '' : 'none';
-        if (isMatch) matchFound = true;
-      });
-
-      const noResultsRow = document.getElementById('no-results');
-      if (noResultsRow) noResultsRow.style.display = matchFound ? 'none' : '';
+      currentPage = 1; // reset to page 1 after search
+      renderTable();
+      renderPagination();
     });
   });
 
 // --- Render Table Function ---
-function renderTable(data, table) {
-  table.innerHTML = ''; // Clear existing rows
-  data.forEach(item => {
+function renderTable() {
+  const table = document.getElementById("data-table");
+  table.innerHTML = '';
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const pageData = filteredData.slice(start, end);
+
+  if (pageData.length === 0) {
+    table.innerHTML = `<tr id="no-results">
+      <td colspan="7" class="text-center text-muted">No matching results found.</td>
+    </tr>`;
+    return;
+  }
+
+  pageData.forEach(item => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${item.timestamp}</td>
@@ -62,6 +76,34 @@ function renderTable(data, table) {
   });
 }
 
+// --- Render Pagination Buttons ---
+function renderPagination() {
+  let container = document.getElementById("pagination");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "pagination";
+    container.className = "d-flex justify-content-center gap-2 my-3 flex-wrap";
+    document.querySelector(".container").appendChild(container);
+  }
+  container.innerHTML = '';
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  if (totalPages <= 1) return;
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.className = `btn btn-sm ${i === currentPage ? "btn-primary" : "btn-outline-primary"}`;
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      renderTable();
+      renderPagination();
+    });
+    container.appendChild(btn);
+  }
+}
+
+// --- Status Badge Helper ---
 function getStatusClass(status) {
   switch ((status || '').toLowerCase()) {
     case 'pending': return 'bg-warning text-dark';
